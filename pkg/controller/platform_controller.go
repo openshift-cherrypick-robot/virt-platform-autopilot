@@ -40,6 +40,7 @@ import (
 	pkgcontext "github.com/kubevirt/virt-platform-autopilot/pkg/context"
 	"github.com/kubevirt/virt-platform-autopilot/pkg/engine"
 	"github.com/kubevirt/virt-platform-autopilot/pkg/overrides"
+	"github.com/kubevirt/virt-platform-autopilot/pkg/tlsprofile"
 	"github.com/kubevirt/virt-platform-autopilot/pkg/util"
 )
 
@@ -142,6 +143,12 @@ func (r *PlatformReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 			return ctrl.Result{}, nil
 		}
 		return ctrl.Result{}, err
+	}
+
+	if changed, err := tlsprofile.SetHyperConvergedProfileFromUnstructured(hco); err != nil {
+		logger.Error(err, "Failed to read spec.security.tlsSecurityProfile from HCO")
+	} else if changed {
+		logger.Info("Updated metrics TLS security profile override from HCO")
 	}
 
 	// Opt-in gate: the autopilot is inactive in this early phase unless explicitly enabled.
