@@ -208,7 +208,7 @@ rules:
       - patch
       - update
       - watch
-  # Prometheus Monitoring
+  # Prometheus Monitoring (includes tombstone cleanup)
   - apiGroups:
       - monitoring.coreos.com
     resources:
@@ -217,6 +217,7 @@ rules:
       - servicemonitors
     verbs:
       - create
+      - delete
       - get
       - list
       - patch
